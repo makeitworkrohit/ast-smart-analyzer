@@ -6,13 +6,6 @@ It allows users to capture or upload photos of agar plates, measure the diameter
 
 ---
 
-## 🚀 Live Deployments
-
-*   **Production Frontend:** [https://ast-smart-analyzer.expo.app](https://ast-smart-analyzer.expo.app)
-*   **Production Backend API:** [https://ast-smart-analyzer.onrender.com](https://ast-smart-analyzer.onrender.com)
-*   **GitHub Repository:** [https://github.com/makeitworkrohit/ast-smart-analyzer](https://github.com/makeitworkrohit/ast-smart-analyzer)
-
----
 
 ## 🌟 Key Features
 
@@ -38,34 +31,4 @@ It allows users to capture or upload photos of agar plates, measure the diameter
 *   **AI Layer:** Direct OpenAI SDK integration implementing custom JSON response structures.
 *   **Testing:** Automated endpoints coverage using `pytest`.
 
----
 
-## 🛠️ Local Development
-
-### Prerequisites
-*   Node.js (v18+)
-*   Python (3.10+)
-*   MongoDB Instance
-
-### Run Backend
-1. Go to the backend folder:
-   ```bash
-   cd backend
-   ```
-2. Create `.env` using `.env.example` and add your `MONGO_URL`, `JWT_SECRET`, and `OPENAI_API_KEY`.
-3. Install dependencies and start server:
-   ```bash
-   pip install -r requirements.txt
-   python server.py
-   ```
-
-### Run Frontend
-1. Go to the frontend folder:
-   ```bash
-   cd frontend
-   ```
-2. Install packages and start Expo:
-   ```bash
-   npm install
-   npx expo start --web
-   ```
