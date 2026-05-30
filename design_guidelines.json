@@ -1,0 +1,147 @@
+{
+  "project_name": "AST Smart Analyzer",
+  "theme": "Light",
+  "archetype": "4 (Swiss & High-Contrast - Clinical Variant)",
+  "design_philosophy": "High legibility, precision, and trust. Uses crisp off-white backgrounds with high-contrast slate actions. Employs a 'Control Room' style bento layout for the dashboard. Minimalist styling with sharp typography for scientific exactness. No AI-slop purple gradients.",
+  "colors": {
+    "background": "bg-slate-50",
+    "surface": "bg-white",
+    "border": "border-slate-200",
+    "primary": "bg-slate-900",
+    "primary_text": "text-white",
+    "secondary": "bg-slate-100",
+    "secondary_text": "text-slate-900",
+    "text_main": "text-slate-900",
+    "text_muted": "text-slate-500",
+    "accent_ai": {
+      "bg": "bg-blue-50",
+      "text": "text-blue-800",
+      "border": "border-blue-200"
+    },
+    "status": {
+      "sensitive": {
+        "bg": "bg-emerald-50",
+        "text": "text-emerald-700",
+        "border": "border-emerald-200",
+        "indicator": "bg-emerald-500"
+      },
+      "intermediate": {
+        "bg": "bg-amber-50",
+        "text": "text-amber-700",
+        "border": "border-amber-200",
+        "indicator": "bg-amber-500"
+      },
+      "resistant": {
+        "bg": "bg-red-50",
+        "text": "text-red-700",
+        "border": "border-red-200",
+        "indicator": "bg-red-500"
+      }
+    }
+  },
+  "typography": {
+    "fonts": {
+      "headings": "Manrope",
+      "body": "IBM Plex Sans"
+    },
+    "hierarchy": {
+      "h1": "text-4xl font-black tracking-tighter text-slate-900",
+      "h2": "text-2xl font-bold tracking-tight text-slate-900",
+      "h3": "text-xl font-semibold tracking-tight text-slate-900",
+      "h4": "text-lg font-semibold text-slate-900",
+      "body": "text-base font-normal text-slate-700 leading-relaxed",
+      "label": "text-xs font-bold uppercase tracking-[0.2em] text-slate-500",
+      "data_value": "text-3xl font-medium tracking-tight text-slate-900"
+    }
+  },
+  "spacing_and_layout": {
+    "screen_padding": "px-6 py-4",
+    "touch_targets": "min-h-[56px] for primary buttons, min-h-[48px] for list items",
+    "border_radius": {
+      "buttons": "rounded-full",
+      "cards": "rounded-2xl",
+      "images": "rounded-3xl",
+      "pills": "rounded-full"
+    },
+    "shadows": {
+      "card": "shadow-sm shadow-slate-200/50",
+      "floating_action": "shadow-xl shadow-slate-900/10"
+    }
+  },
+  "screens": {
+    "login": {
+      "layout": "Vertical stack. Top 40% uses 'login_background' image with gradient overlay fading to bg-slate-50. Bottom 60% contains the form.",
+      "components": [
+        "Brand Logo & Title (H1)",
+        "Input fields: Email, Password (h-14, rounded-2xl, bg-white, border border-slate-200, px-4)",
+        "Primary CTA: 'Sign In' (bg-slate-900, text-white, h-14, rounded-full, w-full, testID='login-submit-button')"
+      ]
+    },
+    "home": {
+      "layout": "Bento Grid approach. Top hero tile, split bottom tiles.",
+      "components": [
+        "Header: Greeting + Profile Avatar",
+        "Hero Tile: 'Scan Plate' - full width, bg-slate-900, rounded-3xl, p-8. Uses 'home_hero_bg' as a subtle masked background. White text. Large ScanLine icon.",
+        "Row Tiles: 'History' & 'Settings' - half-width, bg-white, rounded-2xl, border border-slate-200, p-6. Top-aligned icons, bottom-aligned text."
+      ]
+    },
+    "scan_flow": {
+      "layout": "Full-screen standard modal stack.",
+      "components": [
+        "Step 1 & 2: Searchable Dropdown. Large sticky search bar (h-14). FlatList of items. Selected item has blue checkmark. 'Other' reveals inline TextInput.",
+        "Step 3 (Camera): Full-screen Camera view. Cutout overlay for 6mm disc alignment. Bottom floating shutter button.",
+        "Step 4 (Measurement): Image preview centered. Overlay of a red dashed circle (border-red-500, border-2, border-dashed, rounded-full). Bottom sheet for manual correction containing +/- 0.1mm stepper buttons and a 'Confirm Measurement' primary CTA."
+      ]
+    },
+    "results": {
+      "layout": "Scrollable View with distinct data cards (bg-white, rounded-2xl, p-5).",
+      "components": [
+        "Top Image: Cropped agar image with final measurement ring overlay.",
+        "Hero Metric: '24 mm' centered. Pill badge: 'S - Sensitive' (bg-emerald-50, text-emerald-700).",
+        "Details Card: 'Estimated MIC: ≤ 1.0 µg/mL' (text-slate-900).",
+        "Organisms Section: Ranked list. Each item shows organism name and a confidence progress bar (bg-slate-900).",
+        "AI Explanation: Card with bg-blue-50, border-l-4 border-blue-500, Sparkles icon, text-blue-900. testID='ai-explanation-card'.",
+        "Disclaimer: Sticky bottom text: 'For educational/research purposes only' (text-xs, text-slate-500, centered)."
+      ]
+    },
+    "history": {
+      "layout": "Chronological FlatList with sticky section headers for months.",
+      "components": [
+        "List Item: Row layout. Left: Date (Overline style). Title: Sample Type + Antibiotic. Right: Zone mm + S/I/R colored pill. border-b border-slate-100 py-4. testID='history-item'."
+      ]
+    },
+    "settings": {
+      "layout": "SectionList grouped by Account, App, Data, Support, About.",
+      "components": [
+        "Section Header: text-xs tracking-[0.2em] uppercase text-slate-500 mt-6 mb-2 ml-4",
+        "Row Item: bg-white px-4 py-4 flex-row justify-between items-center border-b border-slate-100. Toggle switches for App settings."
+      ]
+    }
+  },
+  "media": {
+    "login_background": {
+      "url": "https://images.unsplash.com/photo-1582719299074-be127353065f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBtZWRpY2FsJTIwbGFib3JhdG9yeSUyMGNsZWFufGVufDB8fHx8MTc3NjU3NTc1Nnww&ixlib=rb-4.1.0&q=85",
+      "description": "Clean medical laboratory environment. Use as a top-screen background with a white gradient overlay for the login screen to establish clinical context."
+    },
+    "home_hero_bg": {
+      "url": "https://images.unsplash.com/photo-1631556763161-00ae33e9f180?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwyfHxhZ2FyJTIwcGxhdGUlMjBtaWNyb2Jpb2xvZ3klMjBsYWJ8ZW58MHx8fHwxNzc2NTc1NzQwfDA&ixlib=rb-4.1.0&q=85",
+      "description": "Microbiologist holding agar plates. Use as a low-opacity image mask inside the 'Scan Plate' main bento tile on the Home screen."
+    },
+    "placeholder_agar": {
+      "url": "https://images.unsplash.com/photo-1631557677599-ee5fe0b3440b?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMzJ8MHwxfHNlYXJjaHwxfHxhZ2FyJTIwcGxhdGUlMjBtaWNyb2Jpb2xvZ3klMjBsYWJ8ZW58MHx8fHwxNzc2NTc1NzQwfDA&ixlib=rb-4.1.0&q=85",
+      "description": "Red petri dish, use as a placeholder image for testing the measurement screen or history list thumbnails before actual camera integration is complete."
+    }
+  },
+  "instructions_to_main_agent": [
+    "This is an Expo React Native app. Translate the provided Tailwind utility classes into NativeWind conventions (e.g., using `className` on Views and Texts).",
+    "CRITICAL: All interactive elements (Pressable, TouchableOpacity, TextInput) MUST include `testID` attribute (e.g., `testID='login-submit-button'`).",
+    "Use `lucide-react-native` for all icons.",
+    "For the camera overlay (6mm circle), use a full-screen `<View>` with an absolutely positioned inner `<View>` that has `borderRadius` and extremely thick `borderWidth` to create a 'cutout' effect.",
+    "For the zone measurement step, implement manual correction logic via +/- stepper buttons in the bottom sheet or PinchGestureHandler if feasible in the current environment.",
+    "Build bespoke components (Cards, Buttons, Inputs) using React Native primitives + NativeWind. Do not attempt to use HTML-based Shadcn components.",
+    "Layouts must be mobile-first: large touch targets (min 56px for primary actions), KeyboardAvoidingViews for inputs, and safe area insets via `useSafeAreaInsets` or NativeWind's safe classes.",
+    "DO NOT use Inter font. Configure `tailwind.config.js` to map `font-manrope` and `font-plex` for React Native Text components.",
+    "Create .js files with ES6 modules, not .tsx.",
+    "Never use fully transparent backgrounds behind text unless it is over a guaranteed solid, high-contrast area."
+  ]
+}
