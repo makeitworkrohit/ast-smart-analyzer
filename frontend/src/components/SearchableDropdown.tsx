@@ -1,9 +1,14 @@
 /**
  * Searchable autocomplete dropdown. Type to filter, tap to select.
  * Supports a free-text "Other" sentinel that reveals a plain TextInput.
+ *
+ * FIX: useState(value) only runs once on mount. On revisit the ScanContext
+ * already holds the previous selection, so query is pre-filled but focused
+ * stays false — the list never opens. We sync query via useEffect and show
+ * a tappable chip when a value is already selected so users can change it.
  */
 import { Ionicons } from "@expo/vector-icons";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   FlatList,
   StyleSheet,
@@ -38,12 +43,38 @@ export default function SearchableDropdown({
   const [otherMode, setOtherMode] = useState(
     allowOther && !!value && !items.includes(value)
   );
+  const prevValueRef = useRef(value);
+
+  // KEY FIX: sync internal query when the external value changes (e.g. on
+  // revisit when ScanContext already holds a previous selection, or when
+  // the parent resets value to "").
+  useEffect(() => {
+    if (value !== prevValueRef.current) {
+      prevValueRef.current = value;
+      if (!value) {
+        setQuery("");
+        setFocused(false);
+        setOtherMode(false);
+      } else if (items.includes(value)) {
+        setQuery(value);
+        setOtherMode(false);
+      } else if (allowOther && value) {
+        setOtherMode(true);
+      }
+    }
+  }, [value, items, allowOther]);
+
+  // Also sync otherMode when items load asynchronously after first render
+  useEffect(() => {
+    if (allowOther && value && items.length > 0 && !items.includes(value)) {
+      setOtherMode(true);
+    }
+  }, [items, value, allowOther]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     const base = allowOther ? [...items, "Other"] : items;
     if (!q) return base;
-    // rank: startsWith before includes
     const starts = base.filter((s) => s.toLowerCase().startsWith(q));
     const contains = base.filter(
       (s) => !s.toLowerCase().startsWith(q) && s.toLowerCase().includes(q)
@@ -69,6 +100,7 @@ export default function SearchableDropdown({
               setOtherMode(false);
               onChange("");
               setQuery("");
+              setFocused(false);
             }}
             style={styles.switchBtn}
             testID={`${testID}-switch-list`}
@@ -83,33 +115,52 @@ export default function SearchableDropdown({
   return (
     <View style={styles.wrap} testID={testID}>
       <Text style={[F.label, { marginBottom: S.s2 }]}>{label}</Text>
-      <View style={[styles.input, styles.searchBox]}>
-        <Ionicons name="search" size={18} color={C.textMuted} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder={placeholder}
-          placeholderTextColor={C.textSubtle}
-          value={query}
-          onFocus={() => setFocused(true)}
-          onChangeText={(t) => {
-            setQuery(t);
+
+      {/* When a value is already selected and not focused: show a chip.
+          Tapping the chip clears the selection and opens the search. */}
+      {!!value && !focused ? (
+        <TouchableOpacity
+          style={styles.selectedChip}
+          onPress={() => {
+            setQuery("");
+            onChange("");
             setFocused(true);
-            if (value) onChange(""); // clear selection while typing
           }}
-          testID={`${testID}-search`}
-        />
-        {!!query && (
-          <TouchableOpacity
-            onPress={() => {
-              setQuery("");
-              onChange("");
+          testID={`${testID}-chip`}
+        >
+          <Text style={styles.chipText} numberOfLines={1}>{value}</Text>
+          <Ionicons name="pencil" size={15} color={C.textMuted} />
+        </TouchableOpacity>
+      ) : (
+        /* Search box — shown when no value yet or actively editing */
+        <View style={[styles.input, styles.searchBox]}>
+          <Ionicons name="search" size={18} color={C.textMuted} />
+          <TextInput
+            style={styles.searchInput}
+            placeholder={placeholder}
+            placeholderTextColor={C.textSubtle}
+            value={query}
+            onFocus={() => setFocused(true)}
+            onChangeText={(t) => {
+              setQuery(t);
+              setFocused(true);
+              if (value) onChange("");
             }}
-            testID={`${testID}-clear`}
-          >
-            <Ionicons name="close-circle" size={18} color={C.textSubtle} />
-          </TouchableOpacity>
-        )}
-      </View>
+            testID={`${testID}-search`}
+          />
+          {!!query && (
+            <TouchableOpacity
+              onPress={() => {
+                setQuery("");
+                onChange("");
+              }}
+              testID={`${testID}-clear`}
+            >
+              <Ionicons name="close-circle" size={18} color={C.textSubtle} />
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
 
       {focused && (
         <View style={styles.dropdown}>
@@ -189,6 +240,24 @@ const styles = StyleSheet.create({
     color: C.text,
     fontSize: 15,
     height: "100%",
+  },
+  selectedChip: {
+    height: S.hInput,
+    backgroundColor: C.surface,
+    borderWidth: 1.5,
+    borderColor: C.primary,
+    borderRadius: S.rMd,
+    paddingHorizontal: S.s4,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  chipText: {
+    flex: 1,
+    color: C.text,
+    fontSize: 15,
+    fontWeight: "600",
   },
   switchBtn: {
     width: S.hInput,
