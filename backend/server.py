@@ -1,4 +1,5 @@
 """AST Smart Analyzer — FastAPI backend."""
+import asyncio
 import logging
 import os
 import uuid
@@ -113,6 +114,18 @@ def _verify_password(pw: str, pw_hash: str) -> bool:
         return False
 
 
+async def _hash_password_async(pw: str) -> str:
+    """Offload CPU-bound bcrypt hashing to a thread pool — keeps event loop free."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, _hash_password, pw)
+
+
+async def _verify_password_async(pw: str, pw_hash: str) -> bool:
+    """Offload CPU-bound bcrypt verification to a thread pool — keeps event loop free."""
+    loop = asyncio.get_running_loop()
+    return await loop.run_in_executor(None, _verify_password, pw, pw_hash)
+
+
 def _make_token(user_id: str, email: str) -> str:
     payload = {
         "sub": user_id,
@@ -164,7 +177,7 @@ async def register(body: RegisterIn) -> AuthOut:
         "id": user_id,
         "email": body.email.lower(),
         "name": body.name or body.email.split("@")[0],
-        "password_hash": _hash_password(body.password),
+        "password_hash": await _hash_password_async(body.password),
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.users.insert_one(user_doc)
@@ -178,7 +191,7 @@ async def register(body: RegisterIn) -> AuthOut:
 @api.post("/auth/login", response_model=AuthOut)
 async def login(body: LoginIn) -> AuthOut:
     user = await db.users.find_one({"email": body.email.lower()}, {"_id": 0})
-    if not user or not _verify_password(body.password, user.get("password_hash", "")):
+    if not user or not await _verify_password_async(body.password, user.get("password_hash", "")):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     token = _make_token(user["id"], user["email"])
     return AuthOut(
@@ -265,8 +278,10 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def _startup() -> None:
-    await db.users.create_index("email", unique=True)
-    await db.scans_collection.create_index([("user_id", 1), ("timestamp", -1)])
+    await db.users.create_index("email", unique=True, background=True)
+    await db.users.create_index("id", unique=True, background=True)  # fast lookup in current_user
+    await db.scans_collection.create_index([("user_id", 1), ("timestamp", -1)], background=True)
+    await db.scans_collection.create_index("id", background=True)  # fast single-scan lookup
     log.info("AST Smart Analyzer backend ready")
 
 
