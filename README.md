@@ -4,6 +4,8 @@
 
 It allows users to capture or upload photos of agar plates, measure the diameter of zone of inhibition overlays, and receive AI-driven susceptibility interpretations, predicted MIC ranges, and plausible micro-organisms.
 
+Note: This app is built for mobile devices, so the demo is best viewed on a phone. The PC experience may not reflect the actual functionality.
+
 ---
 
 
