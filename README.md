@@ -1,4 +1,4 @@
-# AST Smart Analyzer 🔬🦠
+# AST Smart Analyzer
 
 **AST Smart Analyzer** is an educational universal application designed for **Antimicrobial Susceptibility Testing (AST)** using the clinical Kirby-Bauer disc diffusion method. 
 
@@ -9,7 +9,7 @@ Note: This app is built for mobile devices, so the demo is best viewed on a phon
 ---
 
 
-## 🌟 Key Features
+## Key Features
 
 *   **Interactive Measurement UI:** Intuitive touch-based / mouse-based on-screen caliper tool in the Expo app to overlay and measure the zone of inhibition in millimeters.
 *   **AI Interpretation Engine:** FastAPI backend powered by OpenAI (`gpt-4o-mini`) translating zone diameters into CLSI-style interpretations (*Sensitive*, *Intermediate*, *Resistant*).
@@ -19,7 +19,7 @@ Note: This app is built for mobile devices, so the demo is best viewed on a phon
 
 ---
 
-## 📂 Architecture Overview
+## Architecture Overview
 
 ### 1. Frontend (`/frontend`)
 *   **Framework:** Expo SDK 54 / React Native (Universal Web, iOS, Android support).
